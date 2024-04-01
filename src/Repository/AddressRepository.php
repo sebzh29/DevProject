@@ -22,7 +22,7 @@ class AddressRepository extends ServiceEntityRepository
     }
 
     //    /**
-    //     * @return Address[] Returns an array of Address objects
+    //     * @return address[] Returns an array of address objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -36,7 +36,7 @@ class AddressRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Address
+    //    public function findOneBySomeField($value): ?address
     //    {
     //        return $this->createQueryBuilder('a')
     //            ->andWhere('a.exampleField = :val')
