@@ -29,10 +29,15 @@ class Order
     #[ORM\Column(type: Types::TEXT)]
     private ?string $delivery = null;
 
+    /*
+     * 1 : En attente de paiement
+     * 2 : Paiement validé
+     * 3 : Expédiée
+     */
     #[ORM\Column]
     private ?int $state = null;
 
-    #[ORM\OneToMany(targetEntity: OrderDetail::class, mappedBy: 'myOrder')]
+    #[ORM\OneToMany(targetEntity: OrderDetail::class, mappedBy: 'myOrder',cascade: ['persist'])]
     private Collection $oderDetails;
 
     public function __construct()
@@ -108,12 +113,12 @@ class Order
     /**
      * @return Collection<int, OrderDetail>
      */
-    public function getOderDetails(): Collection
+    public function getOrderDetails(): Collection
     {
         return $this->oderDetails;
     }
 
-    public function addOderDetail(OrderDetail $oderDetail): static
+    public function addOrderDetail(OrderDetail $oderDetail): static
     {
         if (!$this->oderDetails->contains($oderDetail)) {
             $this->oderDetails->add($oderDetail);
@@ -123,7 +128,7 @@ class Order
         return $this;
     }
 
-    public function removeOderDetail(OrderDetail $oderDetail): static
+    public function removeOrderDetail(OrderDetail $oderDetail): static
     {
         if ($this->oderDetails->removeElement($oderDetail)) {
             // set the owning side to null (unless already changed)
