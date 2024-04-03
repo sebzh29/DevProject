@@ -40,6 +40,10 @@ class Order
     #[ORM\OneToMany(targetEntity: OrderDetail::class, mappedBy: 'myOrder',cascade: ['persist'])]
     private Collection $oderDetails;
 
+    #[ORM\ManyToOne(inversedBy: 'orders')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
     public function __construct()
     {
         $this->oderDetails = new ArrayCollection();
@@ -136,6 +140,18 @@ class Order
                 $oderDetail->setMyOrder(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }
