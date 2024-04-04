@@ -2,7 +2,8 @@
 
 {% block main %}
     <h3>Commande n°{{ order.id }}</h3>
-    <span>Passée le : {{ order.createdAt | date('d/m/y') }}</span>
+    <span>Passée le : {{ order.createdAt | date('d/m/y') }}</span><br/>
+    <span>Stripe Session ID : {{ order.stripeSessionId }}</span><br/>
     <br/>
     <br/>
 
