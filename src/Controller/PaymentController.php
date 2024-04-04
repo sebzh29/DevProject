@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\OrderRepository;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -10,27 +11,65 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class PaymentController extends AbstractController
 {
-    #[Route('/commande/paiement', name: 'app_payment')]
-    public function index(): Response
+    #[Route('/commande/paiement/{id_order}', name: 'app_payment')]
+    public function index(
+        $id_order,
+        OrderRepository $orderRepository
+    ): Response
     {
-       Stripe::setApiKey('sk_test_51P1nTpAQNfHtGgGjNnswq4drec73juZAZepOJI7XWAjcrqzZpJlBVNB6oW4Gp8mTk3bAzzLrTHpiFQZjQoKhqDL000THRAoUmP');
-        $YOUR_DOMAIN = 'http://127.0.0.1:8000';
+        Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
+        $YOUR_DOMAIN = $_ENV['DOMAIN'];
 
-        $checkout_session = Session::create([
-            'line_items' => [[
-                # Provide the exact Price ID (e.g. pr_1234) of the product you want to sell
+        //pour sécuriser l'accès à la commande
+        $order = $orderRepository->findOneById([
+            'id' => $id_order,
+            'user' => $this->getUser()
+        ]);
+
+        if (!$order) {
+            return $this->redirectToRoute('app_home');
+        }
+
+
+        $product_for_stripe = [];
+
+        foreach ($order->getOrderDetails()->getValues() as $product) {
+            $product_for_stripe[] = [
                 'price_data' => [
                     'currency' => 'eur',
-                    'unit_amount' => 2000,
+                    'unit_amount' => number_format($product->getProductPriceWt() * 100, 0, '', ''),
                     'product_data' => [
-                        'name' => 'T-shirt',
-                    ],
+                        'name' => $product->getProductName(),
+                        'images' => [
+                            $_ENV['DOMAIN'] . '/uploads/' . $product->getProductIllustration()
+                        ]
+                    ]
                 ],
-                'quantity' => 1,
+                'quantity' => $product->getProductQuantity(),
+            ];
+        }
+
+
+        $product_for_stripe[] = [
+            'price_data' => [
+                'currency' => 'eur',
+                'unit_amount' => number_format($order->getCarrierPrice() * 100, 0, '', ''),
+                'product_data' => [
+                    'name' => 'Transporteur : ' .$order->getCarrierName(),
+                ]
+            ],
+            'quantity' => 1,
+        ];
+
+
+        $checkout_session = Session::create([
+            'customer_email' => $this->getUser()->getEmail(),
+            'line_items' => [[
+                $product_for_stripe
             ]],
             'mode' => 'payment',
-            'success_url' => $YOUR_DOMAIN . '/success.html',
-            'cancel_url' => $YOUR_DOMAIN . '/cancel.html',
+            'success_url' => $_ENV['DOMAIN'] . '/success.html',
+            'cancel_url' => $_ENV['DOMAIN'] . '/cancel.html',
         ]);
 
         return $this->redirect($checkout_session->url);
