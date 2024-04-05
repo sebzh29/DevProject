@@ -11,9 +11,21 @@ class Mail
         $to_email,
         $to_name,
         $subject,
-        $content
+        $template,
+        $vars = null
     )
     {
+        // Récupération du contenu du template
+        $content = file_get_contents(dirname(__DIR__).'/Mail/'.$template);
+
+        // Récupération des variables facultatives
+        if($vars != null){
+            foreach($vars as $key => $value){
+                $content = str_replace('{'.$key.'}', $value, $content);
+            }
+        }
+
+        // Envoi du mail
         $mj = new Client(
             $_ENV['MJ_APIKEY_PUBLIC'],
             $_ENV['MJ_APIKEY_PRIVATE'],

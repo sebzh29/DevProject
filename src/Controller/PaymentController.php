@@ -89,6 +89,8 @@ class PaymentController extends AbstractController
         Cart $cart
     ): Response
     {
+        //envoyer un mail
+
         $order = $orderRepository->findOneBy([
             'stripe_session_id' => $stripe_session_id,
             'user' => $this->getUser()
