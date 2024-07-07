@@ -41,10 +41,9 @@ class ProductCrudController extends AbstractCrudController
             SlugField::new('slug')->setTargetFieldName('name')->setLabel('Slug')->setHelp('Le slug du produit.'),
             TextEditorField::new('description')->setLabel('Description')->setHelp('La description du produit.'),
             ImageField::new('illustration')
-                ->setBasePath('/uploads/')
                 ->setLabel('Illustration')
                 ->setBasePath('/uploads')
-                ->setUploadDir('public/uploads/')
+                ->setUploadDir('/public/uploads/')
                 ->setUploadedFileNamePattern('[year]-[month]-[day]-[contenthash].[extension]')
                 ->setHelp('L\'image du produit 600x600px.')
                 ->setRequired($required),
