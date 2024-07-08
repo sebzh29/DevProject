@@ -21,10 +21,10 @@ class PaymentController extends AbstractController
     ): Response
     {
         Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
-        $YOUR_DOMAIN = $_ENV['DOMAIN'];
+        //$YOUR_DOMAIN = $_ENV['DOMAIN'];
 
         //pour sécuriser l'accès à la commande
-        $order = $orderRepository->findOneById([
+        $order = $orderRepository->findOneBy([
             'id' => $id_order,
             'user' => $this->getUser()
         ]);
