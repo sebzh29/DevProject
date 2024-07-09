@@ -10,12 +10,21 @@
                 {% include 'account/_menu.html.twig' %}
             </div>
             <div class="col-md-9">
-                <h5>Ma liste de souhaits</h5>
+                <h5>Ma liste de souhaits ({{ app.user.wishlists|length }})</h5>
 
                 {% if  app.user.wishlists|length > 0 %}
-                    {% for product in app.user.wishlists %}
-                        {{ dump(product) }}
-                    {% endfor %}
+                    <div class="row">
+                        {% for product in app.user.wishlists %}
+                            <div class="col-md-3 text-center">
+                                <a href="{{ path('app_product', { slug : product.slug }) }}" class="text-decoration-none">
+                                    <img src="{{ asset('uploads/' ~ product.illustration) }}" alt="{{ product.name }}" class="img-fluid">
+                                    <span class="d-block fw-bold text-black">{{ product.name }}</span>
+                                </a>
+                                <span class="d-block">{{ product.priceWt | price }}</span>
+                                <a href="{{ path('app_account_wishlist_remove', { id : product.id }) }}" class="small text-secondary">Supprimer</a>
+                            </div>
+                        {% endfor %}
+                    </div>
                 {% else %}
                     Vous n'avez pas encore de produit dans votre liste de souhaits.
                 {% endif %}
