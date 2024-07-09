@@ -32,7 +32,9 @@ class Order
     /*
      * 1 : En attente de paiement
      * 2 : Paiement validé
-     * 3 : Expédiée
+     * 3 : En cours de préparation
+     * 4 : Expédiée
+     * 5 : Annulée
      */
     #[ORM\Column]
     private ?int $state = null;
