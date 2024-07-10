@@ -10,6 +10,11 @@
     <li class="nav-item">
         <a href="{{ path('app_account_modify_pwd') }}" class="nav-link">Modifier mon mot de passe</a>
     </li>
+    <li>
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('admin') }}" class="nav-link">Administration</a>
+        {% endif %}
+    </li>
     <li class="nav-item">
         <a href="{{ path('app_logout') }}" class="nav-link">Me déconnecter</a>
     </li>
